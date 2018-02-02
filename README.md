@@ -11,28 +11,29 @@
 Nous considérons que vous avez déjà réalisé les workshops suivants :
 
 * [elasticsearch-101](https://github.com/nosql-bootcamp/elasticsearch-101)
+* [elasticsearch-102](https://github.com/nosql-bootcamp/elasticsearch-102)
 * [mongodb-101](https://github.com/nosql-bootcamp/mongodb-101)
 * [mongodb-102](https://github.com/nosql-bootcamp/mongodb-102)
 
 Vous allez également avoir besoin de [Node.js](https://nodejs.org). Si ce n'est pas déjà fait, [installez `node` et `npm`](https://nodejs.org/en/download/) sur votre machine.
 
-Vérifiez les versions installées de `node` (minimum `v6.x`) et `npm` (minimum `v3.x`) :
+Vérifiez les versions installées de `node` (minimum `v8.x`) et `npm` (minimum `v5.x`) :
 
 ```bash
 node -v
-v6.9.2
+v8.9.3
 ```
 
 ```bash
 npm -v
-3.10.9
+5.5.1
 ```
 
 ## Jeu de données
 
 Le jeu de données utilisé pour ce workshop est une liste d'appels au numéro d'urgence 911 dans le [Comté de Montgomery](https://www.google.fr/maps/place/Comt%C3%A9+de+Montgomery,+Pennsylvanie,+%C3%89tats-Unis/data=!4m2!3m1!1s0x89c69c3956b226eb:0x4b0baa22f9505dbd?sa=X&ved=0ahUKEwiMt6HWp8fRAhUG0xoKHfyWCvsQ8gEIdDAO) en Pennsylvanie.
 
-Le fichier CSV des appels est disponible sur le site [Kaggle](https://www.kaggle.com/datasets) : https://www.kaggle.com/mchirico/montcoalert. La version utilisée ici est la version 30.
+Le fichier CSV des appels est disponible sur le site [Kaggle](https://www.kaggle.com/datasets) : https://www.kaggle.com/mchirico/montcoalert. La version utilisée ici est la version 30 (https://www.kaggle.com/mchirico/montcoalert/version/30) et une copie des données est disponible à la racine du repository (`911.csv`).
 
 Extrait du jeu de données :
 
@@ -65,7 +66,7 @@ La donnée `titre` est particulière, elle débute toujours par un identifiant p
 
 ## Objectif
 
-L'objectif est d'importer les données dans [ElasticSearch](./elasticsearch) et/ou dans [MongoDB](./mongodb) et de construire un certain nombre de requêtes pour répondre à différents besoins listés ci-après.
+L'objectif est d'importer les données dans [ElasticSearch](./elasticsearch) et dans [MongoDB](./mongodb) et de construire un certain nombre de requêtes pour répondre à différents besoins listés ci-après.
 
 ### Compter le nombre d'appels autour de Lansdale dans un rayon de 500 mètres
 
