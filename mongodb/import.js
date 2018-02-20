@@ -36,7 +36,22 @@ var insertCalls = function(db, callback) {
 
 MongoClient.connect(mongoUrl, (err, db) => {
     insertCalls(db, result => {
+        var calls = db.collection("calls")
         console.log(`${result.insertedCount} calls inserted`);
-        db.close();
+        calls.createIndex({location : "2dsphere"}, (err, result) => {
+            if (err){
+                console.log(err);
+            } else {
+                console.log("2dsphere index added");
+            }
+            calls.createIndex({title : "text"}, (err, result) => {
+                if (err){
+                    console.log(err);
+                } else {
+                    console.log("text index added");
+                }
+                db.close();
+            })
+        });
     });
 });
