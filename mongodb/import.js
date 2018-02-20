@@ -13,15 +13,17 @@ var insertCalls = function(db, callback) {
         .pipe(csv())
         .on('data', data => {
             var call = {
-                latitude : data.lat,
-                longitude : data.lng,
+                location : {
+                    type : "Point",
+                    coordinates : [Number(data.lng), Number(data.lat)]
+                },
                 description : data.desc,
                 zip : data.zip,
                 title : data.title,
                 timeStamp : data.timeStamp,
                 twp : data.twp,
-                addr : data.addr,
-                e : data.e
+                addr : data.addr
+                // ignore e which is a superfluous column
             };
             calls.push(call);
         })
