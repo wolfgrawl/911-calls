@@ -5,6 +5,8 @@ var fs = require('fs');
 var MongoClient = mongodb.MongoClient;
 var mongoUrl = 'mongodb://localhost:27017/911-calls';
 
+const EARTH_RADIUS_IN_METERS = 6378100;
+
 var insertCalls = function(db, callback) {
     var collection = db.collection('calls');
 
@@ -34,6 +36,32 @@ var insertCalls = function(db, callback) {
         });
 }
 
+var searchCountInRadius = (db, lat, lng, radius, callback) => {
+    var calls = db.collection("calls");
+    radius = metersToRadians(radius);
+
+    calls.find({
+        location : {
+            $geoWithin : {
+                $centerSphere :  [
+                    [
+                    lng, 
+                    lat
+                    ], 
+                radius
+                ]
+            }
+        }
+    }).count((err, result) => {
+        var number = result;
+        callback(number);
+    });
+}
+
+var metersToRadians = (radius) => {
+    return radius / EARTH_RADIUS_IN_METERS;
+}
+
 MongoClient.connect(mongoUrl, (err, db) => {
     insertCalls(db, result => {
         var calls = db.collection("calls")
@@ -50,8 +78,14 @@ MongoClient.connect(mongoUrl, (err, db) => {
                 } else {
                     console.log("text index added");
                 }
-                db.close();
+                console.log("searching for calls in a 500m radius to Lansdale, PA, USA...");
+                searchCountInRadius(db, 40.241493, -75.283783, 500, (result) => {
+                    console.log(result);
+                    db.close();
+                })
             })
         });
     });
 });
+
+// db.calls.find( { location : { $geoWithin : { $centerSphere :  [ [ -75.283783, 40.241493 ] , 500/6378100 ] } } } ).count()
