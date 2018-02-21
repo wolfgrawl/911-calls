@@ -104,6 +104,102 @@ GET 911/call/_search
 }
 ```
 
+### Les trois mois ayant comptabilisés le plus d'appel
+
+```
+GET 911/call/_search
+{
+  "size" : 0,
+  "aggs" : {
+    "calls" : {
+      "date_histogram" : {
+        "field" : "date",
+        "interval" : "month",
+        "order" : { "_count" : "desc" }
+      }
+    }
+  }
+}
+
+# Résultat
+"aggregations": {
+    "calls": {
+      "buckets": [
+        {
+          "key_as_string": "2016-01-01T00:00:00.000Z",
+          "key": 1451606400000,
+          "doc_count": 13084
+        },
+        {
+          "key_as_string": "2016-10-01T00:00:00.000Z",
+          "key": 1475280000000,
+          "doc_count": 12502
+        },
+        {
+          "key_as_string": "2016-12-01T00:00:00.000Z",
+          "key": 1480550400000,
+          "doc_count": 12162
+        },
+        {
+          "key_as_string": "2016-11-01T00:00:00.000Z",
+          "key": 1477958400000,
+          "doc_count": 12092
+        },
+        {
+          "key_as_string": "2016-07-01T00:00:00.000Z",
+          "key": 1467331200000,
+          "doc_count": 12074
+        },
+        {
+          "key_as_string": "2016-08-01T00:00:00.000Z",
+          "key": 1470009600000,
+          "doc_count": 11910
+        },
+        {
+          "key_as_string": "2016-06-01T00:00:00.000Z",
+          "key": 1464739200000,
+          "doc_count": 11746
+        },
+        {
+          "key_as_string": "2016-09-01T00:00:00.000Z",
+          "key": 1472688000000,
+          "doc_count": 11669
+        },
+        {
+          "key_as_string": "2016-02-01T00:00:00.000Z",
+          "key": 1454284800000,
+          "doc_count": 11394
+        },
+        {
+          "key_as_string": "2016-05-01T00:00:00.000Z",
+          "key": 1462060800000,
+          "doc_count": 11368
+        },
+        {
+          "key_as_string": "2016-04-01T00:00:00.000Z",
+          "key": 1459468800000,
+          "doc_count": 11280
+        },
+        {
+          "key_as_string": "2016-03-01T00:00:00.000Z",
+          "key": 1456790400000,
+          "doc_count": 11074
+        },
+        {
+          "key_as_string": "2015-12-01T00:00:00.000Z",
+          "key": 1448928000000,
+          "doc_count": 7935
+        },
+        {
+          "key_as_string": "2017-01-01T00:00:00.000Z",
+          "key": 1483228800000,
+          "doc_count": 2904
+        }
+      ]
+    }
+  }
+```
+
 
 ## Kibana
 
