@@ -28,7 +28,7 @@ fs.createReadStream('../911.csv')
         description : data.desc,
         zip : data.zip,
         title : data.title,
-        timeStamp : data.timeStamp,
+        timeStamp : new Date(data.timeStamp),
         twp : data.twp,
         addr : data.addr
       });
