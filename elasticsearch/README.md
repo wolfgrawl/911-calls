@@ -104,38 +104,6 @@ GET 911/call/_search
 }
 ```
 
-### Nombre d'appels autour de Landscale dans un rayon de 500 mètres
-
-```
-GET 911/call/_search
-{
-    "size": 0,
-    "query": {
-        "bool" : {
-            "must" : {
-                "match_all" : {}
-            },
-            "filter" : {
-                "geo_distance" : {
-                    "distance" : "500m",
-                    "coordinates" : {
-                        "lon" : -75.283783,
-                        "lat" :  40.241493
-                    }
-                }
-            }
-        }
-    }
-}
-
-# Résultat
-"hits": {
-    "total": 717,
-    "max_score": 0,
-    "hits": []
-}
-```
-
 
 ## Kibana
 
