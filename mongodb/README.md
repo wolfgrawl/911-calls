@@ -54,22 +54,119 @@ db.calls.find(
 
 ### Nombre d'appels par catégorie
 
+Un peu trop alambiqué, une autre version aurait pu être possible...
+
+(version node car je n'ai plus la requête sous la main)
+
+```
+var calls = db.collection("calls");
+
+    calls.find({
+        $text : {
+            $search : 
+                "\"EMS:\""
+        }
+    }).count((err, result) => {
+        var EMSnumber = result;
+        calls.find({
+            $text : {
+                $search : 
+                    "\"Traffic:\""
+            }
+        }).count((err, result) => {
+            var trafficNumber = result;
+            calls.find({
+                $text : {
+                    $search : 
+                        "\"Fire:\""
+                }
+            }).count((err, result) => {
+                var fireNumber = result;
+                callback(EMSnumber, trafficNumber, fireNumber);
+            })
+        })
+    });
+
+Callback : (75589, 54549, 23056)
+```
+
+### Les trois mois ayant comptabilisés le plus d'appel
+
 ```
 db.calls.aggregate([
-    { 
-      $group: {
-        _id: "$category",
-        count: { $sum: 1 } 
+  {
+    $project : {   
+      month: { $month : "$timeStamp" },
+      year: { $year: "$timeStamp" }
+    }
+  },
+  {
+    $project : {
+      monthYear: { 
+        $concat: [ 
+          { $substr: ["$month",0,2] },
+          "/",
+          { $substr: ["$year",0,4] } 
+        ]
       }
     }
+  },
+  {
+    $group: {
+      _id: "$monthYear",
+      count: { $sum: 1 } 
+    }
+  },
+  {
+    $sort: {
+      count: -1
+    }
+  },
+  {
+    $limit: 3
+  }
 ])
 
 # Résultat
-{ "_id" : "Traffic", "count" : 54549 }
-{ "_id" : "Fire", "count" : 23056 }
-{ "_id" : "EMS", "count" : 75589 }
+{ "_id" : "1/2016", "count" : 13084 }
+{ "_id" : "10/2016", "count" : 12502 }
+{ "_id" : "12/2016", "count" : 12162 }
+```
+
+### Top 3 des villes avec le plus d'appels pour overdose
 
 ```
+db.calls.aggregate([
+  {
+    $match: {
+      $text: {
+        $search : "OVERDOSE"
+      }
+    }
+  },
+  {
+    $group: {
+      _id: "$twp",
+      count: { $sum: 1}
+    }
+  },
+  {
+    $sort: {
+      count: -1
+    }
+  },
+  {
+    $limit: 3
+  }
+])
+
+#Résultat
+{ "_id" : "POTTSTOWN", "count" : 203 }
+{ "_id" : "NORRISTOWN", "count" : 180 }
+{ "_id" : "UPPER MORELAND", "count" : 110 }
+```
+
+
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :
 
