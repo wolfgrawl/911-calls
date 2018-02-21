@@ -7,11 +7,37 @@ var esClient = new elasticsearch.Client({
   log: 'error'
 });
 
+const createBulkQuery = chunks => {
+  const body = chunks.reduce((acc, chunk) => {
+    acc.push({ index: { _index: '911', _type: 'call' } });
+    acc.push(chunk);
+    return acc;
+  }, []);
+
+  return { body };
+}
+
+var calls = [];
 fs.createReadStream('../911.csv')
     .pipe(csv())
     .on('data', data => {
-      // TODO extract one line from CSV
+      calls.push({
+        location : {
+          lng : parseFloat(data.lng), lat : parseFloat(data.lat)
+        },
+        description : data.desc,
+        zip : data.zip,
+        title : data.title,
+        timeStamp : data.timeStamp,
+        twp : data.twp,
+        addr : data.addr
+      });
     })
     .on('end', () => {
-      // TODO insert data to ES
-    });
+      esClient.bulk(createBulkQuery(calls), (err, response) => {
+        if (err){
+          console.log(err);
+        }
+        esClient.close();
+      });
+});
