@@ -29,10 +29,46 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 
 ## Requêtes
 
-À vous de jouer ! Écrivez les requêtes MongoDB permettant de résoudre les problèmes posés.
+À vous de jouer ! Écrivez les requêtes MongoDB permettant de résoudre les problèmes posés
+
+### Nombre d'appels autour de Landscale dans un rayon de 500 mètres
 
 ```
-TODO : ajouter les requêtes MongoDB ici
+db.calls.find(
+  {
+    coordinates: { 
+      $near : {
+        $geometry: { 
+          type: "Point",
+            coordinates: [-75.283783, 40.241493 ]
+        },
+        $maxDistance: 500
+      }
+    }
+  }
+).count()
+
+# Résultat
+717
+```
+
+### Nombre d'appels par catégorie
+
+```
+db.calls.aggregate([
+    { 
+      $group: {
+        _id: "$category",
+        count: { $sum: 1 } 
+      }
+    }
+])
+
+# Résultat
+{ "_id" : "Traffic", "count" : 54549 }
+{ "_id" : "Fire", "count" : 23056 }
+{ "_id" : "EMS", "count" : 75589 }
+
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :
