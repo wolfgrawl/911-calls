@@ -22,7 +22,7 @@ var insertCalls = function(db, callback) {
                 description : data.desc,
                 zip : data.zip,
                 title : data.title,
-                timeStamp : data.timeStamp,
+                timeStamp : new Date(data.timeStamp),
                 twp : data.twp,
                 addr : data.addr
                 // ignore e which is a superfluous column
@@ -95,6 +95,41 @@ var sortByCategory = (db, callback) => {
     })
 }
 
+// Function for request 3
+var sortByYearMonth = (db, year, month, callback) => {
+    db.collection('calls').aggregate(
+        [
+            {
+                $group:
+                {
+                    _id:
+                    {
+                        month: { $month: "$timeStamp" }, 
+                        year: { $year: "$timeStamp" }
+                    }, 
+                    count: { $sum:1 },
+                    date: { $first: "$timeStamp" }
+                }
+            },
+            {
+                $project:
+                {
+                    date:
+                    {
+                        $dateToString: { format: "%Y-%m", date: "$date" }
+                    },
+                    count: 1,
+                    _id: 0
+                }
+            }
+        ], {
+            cursor : { batchSize : 0 }
+        }
+    , (err, data) => {
+        callback(err, data);
+    })
+}
+
 MongoClient.connect(mongoUrl, (err, db) => {
     // Whole process for the 4 requests
     db.collection("calls").drop((err, del) => {
@@ -121,7 +156,12 @@ MongoClient.connect(mongoUrl, (err, db) => {
                             console.log("EMS calls : " + ems);
                             console.log("Traffic calls : " + traffic);
                             console.log("Fire calls : " + fire);
-                            db.close();
+                            /*console.log("searching calls grouped by date...")
+                            sortByYearMonth(db, 11, 11, (err, data) => {
+                                console.log(err);
+                                console.log(data);*/
+                                db.close();
+                            //})
                         })
                     })
                 })
