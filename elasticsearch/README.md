@@ -21,9 +21,121 @@ GET <nom de votre index>/_count
 
 À vous de jouer ! Écrivez les requêtes ElasticSearch permettant de résoudre les problèmes posés.
 
+### Nombre d'appels autour de Landscale dans un rayon de 500 mètres
+
 ```
-TODO : ajouter les requêtes ElasticSearch ici
+GET 911/call/_search
+{
+    "size": 0,
+    "query": {
+        "bool" : {
+            "must" : {
+                "match_all" : {}
+            },
+            "filter" : {
+                "geo_distance" : {
+                    "distance" : "500m",
+                    "coordinates" : {
+                        "lon" : -75.283783,
+                        "lat" :  40.241493
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Résultat
+"hits": {
+    "total": 717,
+    "max_score": 0,
+    "hits": []
+}
 ```
+
+### Nombre d'appels par catégorie
+
+```
+GET 911/call/_search
+{
+  "size": 0, 
+  "aggs" :{
+    "total_count" : {
+      "global" : {}
+    },
+    "EMS" : {
+      "filter" : {
+        "regexp":{
+            "category" : "ems"
+        }
+      } 
+    },
+    "Fire" : {
+      "filter" : {
+        "regexp":{
+            "category" : "fire"
+        }
+      } 
+    },
+    "Traffic" : {
+    "filter" : {
+       "regexp":{
+           "category" : "traffic"
+        }
+      } 
+    }
+  }
+}
+
+# Résultat
+"aggregations": {
+    "total_count": {
+      "doc_count": 153194
+    },
+    "Traffic": {
+      "doc_count": 54549
+    },
+    "Fire": {
+      "doc_count": 23056
+    },
+    "EMS": {
+      "doc_count": 75589
+    }
+}
+```
+
+### Nombre d'appels autour de Landscale dans un rayon de 500 mètres
+
+```
+GET 911/call/_search
+{
+    "size": 0,
+    "query": {
+        "bool" : {
+            "must" : {
+                "match_all" : {}
+            },
+            "filter" : {
+                "geo_distance" : {
+                    "distance" : "500m",
+                    "coordinates" : {
+                        "lon" : -75.283783,
+                        "lat" :  40.241493
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Résultat
+"hits": {
+    "total": 717,
+    "max_score": 0,
+    "hits": []
+}
+```
+
 
 ## Kibana
 
